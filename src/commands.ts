@@ -348,11 +348,59 @@ ${flashcards}
                 `> `
             );
             
+            // Save current scroll position
+            const scrollInfo = editor.getScrollInfo ? editor.getScrollInfo() : null;
+            
             editor.setValue(lines.join('\n'));
             
-            // Set cursor to new prompt
-            editor.setCursor({ line: promptLine + 3, ch: 2 });
-            editor.focus();
+            // Improved cursor positioning and view scrolling logic
+            setTimeout(() => {
+                // Get updated content
+                const updatedContent = editor.getValue();
+                const updatedLines = updatedContent.split('\n');
+                
+                // Find the new prompt line after the current one
+                let newPromptLine = -1;
+                for (let i = promptLine + 1; i < updatedLines.length; i++) {
+                    if (updatedLines[i] === '> ') {
+                        newPromptLine = i;
+                        break;
+                    }
+                }
+                
+                // If we found the new prompt line, position cursor after ">"
+                if (newPromptLine >= 0) {
+                    // Set cursor position
+                    editor.setCursor({ line: newPromptLine, ch: 2 });
+                    
+                    // Scroll to the new cursor position
+                    const cmEditor = (editor as any).cm;
+                    if (cmEditor) {
+                        // CodeMirror 6
+                        if (cmEditor.scrollIntoView) {
+                            cmEditor.scrollIntoView({ 
+                                line: newPromptLine, 
+                                ch: 2 
+                            }, 100); // 100px margin from bottom
+                        }
+                    } else {
+                        // Use scrollIntoView API (if available)
+                        editor.scrollIntoView({
+                            from: { line: newPromptLine, ch: 0 },
+                            to: { line: newPromptLine, ch: 2 }
+                        }, true);
+                    }
+                    
+                    // Ensure view stays at bottom
+                    const editorElement = document.querySelector('.cm-scroller');
+                    if (editorElement) {
+                        // Scroll to bottom of the current view
+                        editorElement.scrollTop = editorElement.scrollHeight;
+                    }
+                    
+                    editor.focus();
+                }
+            }, 100); // Increased delay to ensure editor content and DOM are fully updated
         } catch (error) {
             new Notice(`Error: ${error.message}`);
             console.error('Chat error:', error);
@@ -373,26 +421,49 @@ ${flashcards}
         const currentLine = cursor.line;
         
         // Get a few lines before current line for context
-        const contextLines = content.split('\n').slice(Math.max(0, currentLine - 10), currentLine + 1);
+        const contextLines = content.split('\n').slice(Math.max(0, currentLine - 5), currentLine + 1);
         const context = contextLines.join('\n');
         
         if (context.trim().length < 10) return; // Not enough context
         
         try {
-            // Generate suggestion
+            // Traditional text continuation
             const systemPrompt = `You are an AI writing assistant. 
-            Based on the context provided, suggest a brief continuation (1-2 sentences max).
+            Based on the context provided, suggest a brief continuation (1-3 words maximum).
             Make your suggestion directly relevant to what's being written.
             Do not repeat what's already written.`;
             
             const response = await this.ollama.generate(`Continue this text: ${context}`, systemPrompt);
             
-            // Display suggestion as ghost text or notice
-            // This would typically be implemented through a more complex UI component
-            // For now, we'll use a notice
-            new Notice(`Suggestion: ${response.substring(0, 100)}${response.length > 100 ? '...' : ''}`, 5000);
+            // Display suggestion as ghost text
+            this.displayGhostText(editor, response);
         } catch (error) {
             console.error('Suggestion error:', error);
+        }
+    }
+
+    private displayGhostText(editor: Editor, text: string): void {
+        // Display ghost text suggestion
+        if (!this.settings.showGhostText) return;
+        
+        // Create a notice with the suggestion
+        const notice = new Notice(`Suggestion: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`, 5000);
+        
+        // Add an accept button
+        if (this.settings.allowQuickAccept) {
+            const noticeEl = notice.noticeEl;
+            const buttonContainer = noticeEl.createDiv('synapse-suggestion-actions');
+            
+            const acceptButton = buttonContainer.createEl('button', {
+                text: 'Accept',
+                cls: 'synapse-accept-button'
+            });
+            
+            acceptButton.addEventListener('click', () => {
+                const cursor = editor.getCursor();
+                editor.replaceRange(text, cursor);
+                notice.hide();
+            });
         }
     }
 

@@ -154,7 +154,7 @@ export class SynapseSettingsTab extends PluginSettingTab {
                 
         // Live features
         containerEl.createEl('h3', { text: 'Live Features' });
-        
+
         new Setting(containerEl)
             .setName('Enable Live Chat')
             .setDesc('Enable interactive chat sessions in notes')
@@ -173,9 +173,37 @@ export class SynapseSettingsTab extends PluginSettingTab {
                 .onChange(async (value) => {
                     this.plugin.settings.enableLiveSuggestions = value;
                     await this.plugin.saveSettings();
+                    
+                    // Update visibility of related settings
+                    this.updateLiveFeatureSettingsVisibility();
                 }));
+
+        // Add simplified Live Copilot settings
+        const liveSuggestionsContainer = containerEl.createDiv('synapse-live-settings');
                 
-        new Setting(containerEl)
+        new Setting(liveSuggestionsContainer)
+            .setName('Show Ghost Text')
+            .setDesc('Show suggested text completions as you type')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.showGhostText)
+                .onChange(async (value) => {
+                    this.plugin.settings.showGhostText = value;
+                    await this.plugin.saveSettings();
+                }))
+            .setDisabled(!this.plugin.settings.enableLiveSuggestions);
+
+        new Setting(liveSuggestionsContainer)
+            .setName('Allow Quick Accept')
+            .setDesc('Show accept button for suggestions')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.allowQuickAccept)
+                .onChange(async (value) => {
+                    this.plugin.settings.allowQuickAccept = value;
+                    await this.plugin.saveSettings();
+                }))
+            .setDisabled(!this.plugin.settings.enableLiveSuggestions);
+                
+        new Setting(liveSuggestionsContainer)
             .setName('Suggestion Delay')
             .setDesc('Delay before showing suggestions (milliseconds)')
             .addSlider(slider => slider
@@ -187,6 +215,9 @@ export class SynapseSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }))
             .setDisabled(!this.plugin.settings.enableLiveSuggestions);
+
+        // Helper method to show/hide settings based on feature enablement
+        this.updateLiveFeatureSettingsVisibility();
 
         // Usage Instructions
         containerEl.createEl('h3', { text: 'Usage Instructions' });
@@ -203,5 +234,12 @@ export class SynapseSettingsTab extends PluginSettingTab {
             </ul>
             <p><strong>Requirements:</strong> Make sure Ollama is installed and running with your selected model.</p>
         `;
+    }
+
+    private updateLiveFeatureSettingsVisibility() {
+        const liveSettingsDiv = this.containerEl.querySelector('.synapse-live-settings');
+        if (liveSettingsDiv) {
+            liveSettingsDiv.style.display = this.plugin.settings.enableLiveSuggestions ? 'block' : 'none';
+        }
     }
 }

@@ -9,6 +9,7 @@ export default class SynapsePlugin extends Plugin {
     ollama: OllamaClient;
     commands: SynapseCommands;
     debouncedSuggestion: any;
+    liveSuggestionEvent: any;
 
     async onload() {
         await this.loadSettings();
@@ -17,7 +18,7 @@ export default class SynapsePlugin extends Plugin {
         this.ollama = new OllamaClient(this.settings.ollamaUrl, this.settings.ollamaModel);
         this.commands = new SynapseCommands(this.app, this.ollama, this.settings);
 
-        // Set up debounced suggestion
+        // Set up debounced suggestion with more advanced features
         this.debouncedSuggestion = debounce(
             (editor: Editor) => this.commands.generateLiveSuggestion(editor),
             this.settings.suggestionDelay
@@ -69,6 +70,17 @@ export default class SynapsePlugin extends Plugin {
             editorCallback: (editor: Editor) => {
                 this.commands.sendChatMessage(editor);
             },
+        });
+
+        // Add new command for Live Copilot
+        this.addCommand({
+            id: 'toggle-live-suggestions',
+            name: 'Toggle Live Suggestions',
+            callback: () => {
+                this.settings.enableLiveSuggestions = !this.settings.enableLiveSuggestions;
+                this.saveSettings();
+                new Notice(`Live suggestions ${this.settings.enableLiveSuggestions ? 'enabled' : 'disabled'}`);
+            }
         });
 
         // Add context menu items
@@ -131,13 +143,7 @@ export default class SynapsePlugin extends Plugin {
         );
         
         // Register editor event for live suggestions
-        if (this.settings.enableLiveSuggestions) {
-            this.registerEvent(
-                this.app.workspace.on('editor-change', (editor: Editor) => {
-                    this.debouncedSuggestion(editor);
-                })
-            );
-        }
+        this.registerLiveSuggestionEvents();
 
         // Check Ollama availability on startup
         this.checkOllamaConnection();
@@ -165,12 +171,21 @@ export default class SynapsePlugin extends Plugin {
         );
         
         // Update event listeners for live suggestions
+        this.registerLiveSuggestionEvents();
+    }
+
+    private registerLiveSuggestionEvents() {
+        // Unregister existing event if needed
+        if (this.liveSuggestionEvent) {
+            this.app.workspace.off('editor-change', this.liveSuggestionEvent);
+        }
+
+        // Only register if feature is enabled
         if (this.settings.enableLiveSuggestions) {
-            this.registerEvent(
-                this.app.workspace.on('editor-change', (editor: Editor) => {
-                    this.debouncedSuggestion(editor);
-                })
-            );
+            this.liveSuggestionEvent = this.app.workspace.on('editor-change', (editor: Editor) => {
+                this.debouncedSuggestion(editor);
+            });
+            this.registerEvent(this.liveSuggestionEvent);
         }
     }
 

@@ -100,6 +100,99 @@
     border-left: 3px solid var(--interactive-accent);
 }
 
+/* Enhanced link suggestion styles */
+.synapse-link-suggestion {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--background-secondary);
+    color: var(--text-normal);
+    border-radius: 4px;
+    font-size: 0.8em;
+    padding: 4px 8px;
+    margin-left: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+    animation: fade-in 0.3s ease-in-out;
+}
+
+.synapse-suggestion-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: 8px;
+}
+
+.synapse-accept-button, .synapse-reject-button {
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.synapse-accept-button {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+.synapse-accept-button:hover {
+    background-color: var(--interactive-accent-hover);
+    transform: scale(1.05);
+}
+
+.synapse-reject-button {
+    background-color: var(--background-modifier-error);
+    color: white;
+}
+
+.synapse-reject-button:hover {
+    background-color: var(--background-modifier-error-hover);
+    transform: scale(1.05);
+}
+
+/* Ghost text appearance */
+.synapse-ghost-text {
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* Comment suggestion appearance */
+.synapse-comment-suggestion {
+    margin-left: 8px;
+    color: var(--text-accent);
+    font-style: italic;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    background-color: var(--background-modifier-success-hover);
+    border-radius: 4px;
+}
+
+/* Animation for suggestions */
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Updated notice styles for suggestions */
+.notice .synapse-suggestion-actions {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+/* Hover highlight for linkable terms */
+.synapse-linkable-term {
+    background-color: rgba(var(--interactive-accent-rgb), 0.1);
+    border-radius: 3px;
+    padding: 0 2px;
+    transition: background-color 0.3s;
+}
+
+.synapse-linkable-term:hover {
+    background-color: rgba(var(--interactive-accent-rgb), 0.2);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* Settings page specific styles */
 .synapse-settings h3 {
     color: var(--interactive-accent);

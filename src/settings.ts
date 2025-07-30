@@ -12,6 +12,9 @@ export interface SynapseSettings {
     enableLiveChat: boolean;
     enableLiveSuggestions: boolean;
     suggestionDelay: number;
+    // Simplified Live Copilot settings
+    showGhostText: boolean;
+    allowQuickAccept: boolean;
 }
 
 export const DEFAULT_SETTINGS: SynapseSettings = {
@@ -27,5 +30,8 @@ export const DEFAULT_SETTINGS: SynapseSettings = {
     chatFolder: 'Chats',
     enableLiveChat: true,
     enableLiveSuggestions: false,
-    suggestionDelay: 1000
+    suggestionDelay: 3000,
+    // Simplified settings with defaults
+    showGhostText: true,
+    allowQuickAccept: true
 };
