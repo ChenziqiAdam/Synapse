@@ -1,0 +1,114 @@
+/* Synapse Plugin Styles */
+
+.synapse-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.synapse-summary {
+    background-color: var(--background-secondary);
+    border-left: 3px solid var(--interactive-accent);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+}
+
+.synapse-flashcard {
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+.synapse-flashcard strong {
+    color: var(--interactive-accent);
+}
+
+.synapse-attribution {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: right;
+    margin-top: 1rem;
+}
+
+/* Chat interface styling */
+.synapse-chat-container {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+}
+
+.synapse-chat-message {
+    max-width: 80%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+}
+
+.synapse-user-message {
+    align-self: flex-end;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-bottom-right-radius: 0.25rem;
+}
+
+.synapse-ai-message {
+    align-self: flex-start;
+    background-color: var(--background-secondary);
+    border-bottom-left-radius: 0.25rem;
+}
+
+.synapse-chat-input {
+    display: flex;
+    margin-top: 1rem;
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: 0.5rem;
+}
+
+.synapse-chat-input textarea {
+    flex-grow: 1;
+    resize: none;
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    background-color: var(--background-secondary);
+}
+
+.synapse-send-button {
+    align-self: flex-end;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Live suggestion styles */
+.synapse-suggestion {
+    color: var(--text-muted);
+    font-style: italic;
+    background-color: var(--background-primary-alt);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin: 0.25rem 0;
+    border-left: 3px solid var(--interactive-accent);
+}
+
+/* Settings page specific styles */
+.synapse-settings h3 {
+    color: var(--interactive-accent);
+    border-bottom: 1px solid var(--background-modifier-border);
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.synapse-test-button {
+    transition: background-color 0.3s ease;
+}
