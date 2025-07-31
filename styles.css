@@ -205,3 +205,147 @@
 .synapse-test-button {
     transition: background-color 0.3s ease;
 }
+
+/* Enhanced settings UI */
+.synapse-settings-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--background-modifier-border);
+    margin-bottom: 20px;
+}
+
+.synapse-tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    margin-right: 2px;
+    transition: background-color 0.2s ease;
+}
+
+.synapse-tab:hover {
+    background-color: var(--background-secondary-alt);
+}
+
+.synapse-tab.active {
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-bottom: none;
+}
+
+.synapse-tab-content {
+    padding: 10px 0;
+}
+
+/* Text area styling */
+.synapse-settings textarea {
+    width: 100%;
+    font-family: var(--font-monospace);
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 8px;
+}
+
+/* Custom variables styling */
+.synapse-custom-vars {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+}
+
+.synapse-custom-var-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.synapse-custom-var-row input {
+    flex-grow: 1;
+    margin-right: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+}
+
+.synapse-delete-var-button {
+    background-color: var(--background-modifier-error);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.synapse-add-var-button {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+/* File selection modal */
+.synapse-modal {
+    width: 500px;
+    max-width: 80vw;
+}
+
+.synapse-file-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 10px 0;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+}
+
+.synapse-file-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.synapse-file-item:hover {
+    background-color: var(--background-secondary-alt);
+}
+
+.synapse-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.synapse-modal-footer button {
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.synapse-modal-footer button:hover {
+    background-color: var(--background-secondary-alt);
+}
+
+/* Model selector styling */
+.synapse-model-selector {
+    margin-bottom: 20px;
+}
+
+.synapse-model-selector select {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* Variables styling */
+.synapse-variable {
+    display: inline-block;
+    background-color: rgba(var(--interactive-accent-rgb), 0.1);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: 0 2px;
+    font-family: var(--font-monospace);
+}

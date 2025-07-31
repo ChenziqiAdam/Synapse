@@ -10,6 +10,7 @@ export default class SynapsePlugin extends Plugin {
     commands: SynapseCommands;
     debouncedSuggestion: any;
     liveSuggestionEvent: any;
+    DEFAULT_SETTINGS = DEFAULT_SETTINGS;
 
     async onload() {
         await this.loadSettings();
