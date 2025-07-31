@@ -62,12 +62,15 @@ export class SynapseCommands {
                         content: explanation,
                         date: new Date().toLocaleDateString(),
                         query: selectedText,
+                        tags: this.getTagsString(),
                         ...this.settings.customTemplateVariables
                     }
                 );
             } else {
-                // Use default format
-                noteContent = `# ${noteTitle}
+                // Use default format with optional tags
+                const tagsLine = this.getTagsString() ? `\ntags: ${this.getTagsString()}` : '';
+                
+                noteContent = `# ${noteTitle}${tagsLine}
 
 ${explanation}
 
@@ -212,7 +215,10 @@ ${summary.split('\n').map(line => `  ${line}`).join('\n')}
             await this.ensureFolderExists(this.settings.flashcardFolder);
             const flashcardFileName = `${this.settings.flashcardFolder}/${noteTitle} - Flashcards.md`;
             
-            const flashcardContent = `# Flashcards for ${noteTitle}
+            // Add tags if enabled
+            const tagsLine = this.getTagsString() ? `\ntags: ${this.getTagsString()}` : '';
+            
+            const flashcardContent = `# Flashcards for ${noteTitle}${tagsLine}
 
 ${flashcards}
 
@@ -265,7 +271,10 @@ ${flashcards}
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const chatFileName = `${this.settings.chatFolder}/Chat-${timestamp}.md`;
         
-        const chatTemplate = `# Chat Session ${new Date().toLocaleString()}
+        // Add tags if enabled
+        const tagsLine = this.getTagsString() ? `\ntags: ${this.getTagsString()}` : '';
+        
+        const chatTemplate = `# Chat Session ${new Date().toLocaleString()}${tagsLine}
 
 ## Context
 *This is a chat session with Synapse AI. Type your messages after the > prompt.*
@@ -418,10 +427,10 @@ ${flashcards}
         const currentLine = cursor.line;
         
         // Get a few lines before current line for context
-        const contextLines = content.split('\n').slice(Math.max(0, currentLine - 5), currentLine + 3);
+        const contextLines = content.split('\n').slice(Math.max(0, currentLine - 10), currentLine + 5);
         const context = contextLines.join('\n');
         
-        if (context.trim().length < 3) return; // Not enough context
+        if (context.trim().length < 5) return; // Not enough context
         
         try {
             // Traditional text continuation
@@ -459,7 +468,7 @@ ${flashcards}
             
             acceptButton.addEventListener('click', () => {
                 const cursor = editor.getCursor();
-                editor.replaceRange(" " + text, cursor);
+                editor.replaceRange(text, cursor);
                 notice.hide();
             });
         }
@@ -562,5 +571,23 @@ ${flashcards}
         }
         
         return chatHistory;
+    }
+
+    // Helper method to get formatted tags string
+    private getTagsString(): string {
+        if (!this.settings.addSynapseTag || !this.settings.synapseTag) {
+            return '';
+        }
+        
+        // Format tags properly for YAML
+        const tags = this.settings.synapseTag.split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag)
+            .map(tag => {
+                // If tag doesn't start with #, add it
+                return tag.startsWith('#') ? tag : `#${tag}`;
+            });
+            
+        return tags.join(' ');
     }
 }

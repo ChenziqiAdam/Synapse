@@ -61,10 +61,9 @@ export class SynapseSettingsTab extends PluginSettingTab {
         });
 
         // GENERAL SETTINGS
-        generalContent.createEl('h2', { text: 'Synapse Settings' });
 
         // Ollama Configuration
-        generalContent.createEl('h3', { text: 'Ollama Configuration' });
+        generalContent.createEl('h3', { text: 'Ollama' });
 
         new Setting(generalContent)
             .setName('Ollama URL')
@@ -79,7 +78,7 @@ export class SynapseSettingsTab extends PluginSettingTab {
 
         new Setting(generalContent)
             .setName('Model')
-            .setDesc('Ollama model to use (e.g., phi3:mini, llama2, mistral)')
+            .setDesc('Ollama model to use (e.g., phi3:mini, gemma3n:e2b, mistral)')
             .addText(text => text
                 .setPlaceholder('phi3:mini')
                 .setValue(this.plugin.settings.ollamaModel)
@@ -141,8 +140,8 @@ export class SynapseSettingsTab extends PluginSettingTab {
                 });
             });
 
-        // Feature Settings
-        generalContent.createEl('h3', { text: 'Feature Settings' });
+        // Features
+        generalContent.createEl('h3', { text: 'Features' });
 
         new Setting(generalContent)
             .setName('Auto-linking')
@@ -224,8 +223,37 @@ export class SynapseSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
         
+        // Add tag settings to general content
+        generalContent.createEl('h3', { text: 'Note Tagging' });
+        
+        new Setting(generalContent)
+            .setName('Add Tags to Notes')
+            .setDesc('Automatically add tags to all notes created by Synapse')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.addSynapseTag)
+                .onChange(async (value) => {
+                    this.plugin.settings.addSynapseTag = value;
+                    await this.plugin.saveSettings();
+                    
+                    // Update visibility of tag input based on toggle state
+                    tagInput.setDisabled(!value);
+                }));
+        
+        // Add tag input setting
+        let tagInput: Setting;
+        tagInput = new Setting(generalContent)
+            .setName('Tags')
+            .setDesc('Tags to add to notes (comma separated, # optional)')
+            .addText(text => text
+                .setPlaceholder('synapse, ai-generated')
+                .setValue(this.plugin.settings.synapseTag)
+                .onChange(async (value) => {
+                    this.plugin.settings.synapseTag = value;
+                    await this.plugin.saveSettings();
+                }))
+            .setDisabled(!this.plugin.settings.addSynapseTag);
+            
         // PROMPTS SETTINGS
-        promptsContent.createEl('h2', { text: 'AI Prompts Configuration' });
         promptsContent.createEl('p', { 
             text: 'Customize the system prompts used for different features. You can use variables like {{maxResponseLength}}, {{date}}, and {{model}}.'
         });
@@ -370,7 +398,6 @@ export class SynapseSettingsTab extends PluginSettingTab {
             });
 
         // TEMPLATES SETTINGS
-        templatesContent.createEl('h2', { text: 'Templates Configuration' });
         templatesContent.createEl('p', { 
             text: 'Configure templates for generated notes. Templates support variables like {{title}}, {{content}}, {{date}}, and custom variables.'
         });
@@ -419,7 +446,7 @@ export class SynapseSettingsTab extends PluginSettingTab {
         templatesContent.createEl('h3', { text: 'Template Variables' });
         
         templatesContent.createEl('p', { 
-            text: 'Built-in variables: {{title}} - note title, {{content}} - AI generated content, {{date}} - current date, {{query}} - original selected text' 
+            text: 'Built-in variables: {{title}}\n - note title, {{content}}\n - AI generated content, {{date}}\n - current date, {{query}}\n - original selected text' 
         });
 
         // Custom template variables
@@ -455,8 +482,6 @@ export class SynapseSettingsTab extends PluginSettingTab {
         refreshCustomVariables();
 
         // ADVANCED SETTINGS
-        advancedContent.createEl('h2', { text: 'Advanced Settings' });
-
         // Live features
         advancedContent.createEl('h3', { text: 'Live Features' });
 
@@ -485,6 +510,7 @@ export class SynapseSettingsTab extends PluginSettingTab {
 
         // Add simplified Live Copilot settings
         const liveSuggestionsContainer = advancedContent.createDiv('synapse-live-settings');
+        liveSuggestionsContainer.createEl('h4', { text: 'Live Suggestions' });
                 
         new Setting(liveSuggestionsContainer)
             .setName('Show Ghost Text')

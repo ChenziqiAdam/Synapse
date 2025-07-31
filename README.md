@@ -12,6 +12,7 @@ Transform your learning from passive consumption to active knowledge building wi
 - **Local AI**: Works entirely offline using Ollama
 - **Knowledge Graph**: Leverage Obsidian's graph view to visualize connections
 - **Organized Folders**: Keep your generated content neatly organized
+- **Automatic Tagging**: Add consistent tags to all generated notes
 
 ## Installation
 
@@ -55,6 +56,7 @@ Go to Settings → Synapse to configure:
 - Summary placement and YAML formatting options
 - Live suggestion settings
 - Response length limits
+- Auto-tagging settings for consistent organization
 
 ## Folder Organization
 

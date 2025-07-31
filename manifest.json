@@ -4,8 +4,8 @@
     "version": "1.0.0",
     "minAppVersion": "0.15.0",
     "description": "Local AI-powered knowledge engine that creates structured, interconnected notes using Ollama",
-    "author": "Synapse Team",
-    "authorUrl": "https://github.com/synapse-ai/obsidian-plugin",
-    "fundingUrl": "https://github.com/sponsors/synapse-ai",
+    "author": "Adam Chen",
+    "authorUrl": "https://github.com/ChenziqiAdam/Synapse",
+    "fundingUrl": "https://github.com/sponsors/ChenziqiAdam",
     "isDesktopOnly": false
 }
